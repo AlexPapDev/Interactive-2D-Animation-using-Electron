@@ -1,17 +1,14 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    // webPreferences: {
-    //   preload: path.join(__dirname, 'preload.js'),
-    //   nodeIntegration: true, // Enable node integration
-    // },
+    fullscreen: true,
   });
 
   mainWindow.loadFile('index.html');
+  globalShortcut.register('Escape', () => {
+    app.quit()
+  })
 }
 
 app.on('ready', createWindow);
