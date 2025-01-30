@@ -12,93 +12,101 @@ let isPlayingForward = false
 let isPlayingBackward = false
 let gamepadIndex = null
 let previousButtonStates = []
-let isKeyDownLeft = false;
-let isKeyDownRight = false;
+let isKeyDownLeft = false
+let isKeyDownRight = false
 
 // Preload all frames before starting
 function preloadFrames() {
-  const preloadPromises = [];
+  const preloadPromises = []
 
   for (let i = 0; i < FRAME_COUNT; i++) {
-    const img = new Image();
-    img.src = `assets/ela2/img${String(i + 1).padStart(3, '0')}.jpg`;
+    const img = new Image()
+    img.src = `assets/ela2/img${String(i + 1).padStart(3, '0')}.jpg`
 
     const promise = new Promise((resolve) => {
       img.onload = async () => {
-        const bitmap = await createImageBitmap(img);
-        frames[i] = bitmap; // Store the bitmap instead of the raw image
-        resolve();
-      };
-      img.onerror = resolve;
-    });
+        const bitmap = await createImageBitmap(img)
+        frames[i] = bitmap
+        resolve()
+      }
+      img.onerror = resolve
+    })
 
-    preloadPromises.push(promise);
+    preloadPromises.push(promise)
   }
 
-  return Promise.all(preloadPromises);
+  return Promise.all(preloadPromises)
 }
 
 
 // Draw a specific frame
 function drawFrame(frameIndex) {
-  const img = frames[frameIndex];
+  const img = frames[frameIndex]
   if (img) { // Ensure the frame is loaded
-    const width = canvas.height * (img.width / img.height);
-    const xOffset = (canvas.width - width) / 2;
+    const width = canvas.height * (img.width / img.height)
+    const xOffset = (canvas.width - width) / 2
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, xOffset, 0, width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(img, xOffset, 0, width, canvas.height)
   }
 }
 
+function handleKeyboardInputs () {
+  if (isKeyDownRight) {
+    isPlayingForward = true
+  } 
+  if (isKeyDownLeft) {
+    isPlayingBackward = true
+  }
+  if (!isKeyDownRight) {
+    isPlayingForward = false
+  }
+  if (!isKeyDownLeft) {
+    isPlayingBackward = false
+  }
+}
 
 // Combined game loop for animation and input polling
 function gameLoop() {
   // Poll gamepad input
   if (gamepadIndex !== null) {
     const gamepad = navigator.getGamepads()[gamepadIndex]
-    if (gamepad) {
+    if (gamepad) { 
       const rightButton = gamepad.buttons[15]; // Right arrow button
       const leftButton = gamepad.buttons[14]; // Left arrow button
+      
+      const rightButtonPressed = rightButton?.pressed
+      const leftButtonPressed = leftButton?.pressed
 
-      const rightButtonPressed = rightButton.pressed;
-      const leftButtonPressed = leftButton.pressed;
-
-      const rightButtonDown = rightButtonPressed && !previousButtonStates[15];
-      const leftButtonDown = leftButtonPressed && !previousButtonStates[14];
-      const rightButtonUp = !rightButtonPressed && previousButtonStates[15];
-      const leftButtonUp = !leftButtonPressed && previousButtonStates[14];
+      // Axis support for Left/Right
+      const xAxis = gamepad.axes[0] // Left/Right axis
+      const rightAxisPressed = xAxis > 0.5
+      const leftAxisPressed = xAxis < -0.5
+      // console.log(xAxis)
+      const rightButtonDown = (rightAxisPressed || rightButtonPressed) && !previousButtonStates[15]
+      const leftButtonDown = (leftAxisPressed || leftButtonPressed) && !previousButtonStates[14]
+      const rightButtonUp = (!rightAxisPressed && !rightButtonPressed) && previousButtonStates[15]
+      const leftButtonUp = (!leftAxisPressed && !leftButtonPressed) && previousButtonStates[14]
 
       if (rightButtonDown) {
-        isPlayingForward = true;
+        isPlayingForward = true
       } 
       if (leftButtonDown) {
-        isPlayingBackward = true;
+        isPlayingBackward = true
       }
       if (rightButtonUp) {
-        isPlayingForward = false;
+        isPlayingForward = false
       }
       if (leftButtonUp) {
-        isPlayingBackward = false;
+        isPlayingBackward = false
       }
 
       // Store button states for the next frame
-      previousButtonStates[15] = rightButtonPressed;
-      previousButtonStates[14] = leftButtonPressed;
+      previousButtonStates[15] = (rightAxisPressed || rightButtonPressed)
+      previousButtonStates[14] = (leftAxisPressed || leftButtonPressed)
     }
   } else {
-    if (isKeyDownRight) {
-      isPlayingForward = true;
-    } 
-    if (isKeyDownLeft) {
-      isPlayingBackward = true;
-    }
-    if (!isKeyDownRight) {
-      isPlayingForward = false;
-    }
-    if (!isKeyDownLeft) {
-      isPlayingBackward = false;
-    }
+    handleKeyboardInputs()
   }
 
   // Handle animation
@@ -128,18 +136,18 @@ preloadFrames().then(() => {
 })
 function handleKeyDown(event) {
   if (event.key === "ArrowRight") {
-    isKeyDownRight = true;
+    isKeyDownRight = true
   } else if (event.key === "ArrowLeft") {
-    isKeyDownLeft = true;
+    isKeyDownLeft = true
   }
 }
 
 function handleKeyUp(event) {
   if (event.key === "ArrowRight") {
-    isKeyDownRight = false;
+    isKeyDownRight = false
   } else if (event.key === "ArrowLeft") {
-    isKeyDownLeft = false;
+    isKeyDownLeft = false
   }
 }
-window.addEventListener("keydown", handleKeyDown);
-window.addEventListener("keyup", handleKeyUp);
+window.addEventListener("keydown", handleKeyDown)
+window.addEventListener("keyup", handleKeyUp)
