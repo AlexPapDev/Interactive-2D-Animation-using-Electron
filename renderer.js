@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d')
 canvas.width = screen.width
 canvas.height = screen.height
 
-const FRAME_COUNT = 40 // Number of frames
+const FRAME_COUNT = 224 // Number of frames
 const FRAME_RATE = 11.11 // Frames per second
 
 const frames = []
@@ -19,9 +19,9 @@ let isKeyDownRight = false;
 function preloadFrames() {
   const preloadPromises = []
 
-  for (let i = 0 ; i< FRAME_COUNT; i++) {
+  for (let i = 0 ; i < FRAME_COUNT; i++) {
     const img = new Image()
-    img.src = `assets/frames/${String(i + 1).padStart(2, '0')}.jpg`
+    img.src = `assets/elaaaa/img${String(i + 1).padStart(3, '0')}.jpg`
     frames.push(img)
 
     const promise = new Promise((resolve) => {
