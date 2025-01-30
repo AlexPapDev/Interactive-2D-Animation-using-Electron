@@ -17,34 +17,40 @@ let isKeyDownRight = false;
 
 // Preload all frames before starting
 function preloadFrames() {
-  const preloadPromises = []
+  const preloadPromises = [];
 
-  for (let i = 0 ; i < FRAME_COUNT; i++) {
-    const img = new Image()
-    img.src = `assets/elaaaa/img${String(i + 1).padStart(3, '0')}.jpg`
-    frames.push(img)
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    const img = new Image();
+    img.src = `assets/ela2/img${String(i + 1).padStart(3, '0')}.jpg`;
 
     const promise = new Promise((resolve) => {
-      img.onload = resolve
-      img.onerror = resolve
-    })
-    preloadPromises.push(promise)
+      img.onload = async () => {
+        const bitmap = await createImageBitmap(img);
+        frames[i] = bitmap; // Store the bitmap instead of the raw image
+        resolve();
+      };
+      img.onerror = resolve;
+    });
+
+    preloadPromises.push(promise);
   }
 
-  return Promise.all(preloadPromises)
+  return Promise.all(preloadPromises);
 }
+
 
 // Draw a specific frame
 function drawFrame(frameIndex) {
-  const img = frames[frameIndex]
-  if (img.complete) {
-    const width = canvas.height * (img.width / img.height)
-    const xOffset = (canvas.width - width) / 2
+  const img = frames[frameIndex];
+  if (img) { // Ensure the frame is loaded
+    const width = canvas.height * (img.width / img.height);
+    const xOffset = (canvas.width - width) / 2;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.drawImage(img, xOffset, 0, width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, xOffset, 0, width, canvas.height);
   }
 }
+
 
 // Combined game loop for animation and input polling
 function gameLoop() {
@@ -116,6 +122,8 @@ window.addEventListener("gamepadconnected", (event) => {
 
 preloadFrames().then(() => {
   console.log("All frames preloaded, starting animation.")
+  const loadingText = document.querySelector(".loading-text")
+  loadingText.style.display = 'none'
   requestAnimationFrame(gameLoop)
 })
 function handleKeyDown(event) {
