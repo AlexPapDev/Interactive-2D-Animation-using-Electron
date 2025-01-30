@@ -6,6 +6,9 @@ canvas.height = screen.height
 const FRAME_COUNT = 224 // Number of frames
 const FRAME_RATE = 11.11 // Frames per second
 
+const LEFT_BTN_VAL = 14
+const RIGHT_BTN_VAL = 15
+
 const frames = []
 let currentFrame = 0
 let isPlayingForward = false
