@@ -41,7 +41,6 @@ function preloadFrames() {
   return Promise.all(preloadPromises)
 }
 
-
 // Draw a specific frame
 function drawFrame(frameIndex) {
   const img = frames[frameIndex]
@@ -75,8 +74,8 @@ function gameLoop() {
   if (gamepadIndex !== null) {
     const gamepad = navigator.getGamepads()[gamepadIndex]
     if (gamepad) { 
-      const rightButton = gamepad.buttons[15]; // Right arrow button
-      const leftButton = gamepad.buttons[14]; // Left arrow button
+      const rightButton = gamepad.buttons[RIGHT_BTN_VAL] // Right arrow button
+      const leftButton = gamepad.buttons[LEFT_BTN_VAL] // Left arrow button
       
       const rightButtonPressed = rightButton?.pressed
       const leftButtonPressed = leftButton?.pressed
@@ -86,10 +85,10 @@ function gameLoop() {
       const rightAxisPressed = xAxis > 0.5
       const leftAxisPressed = xAxis < -0.5
       // console.log(xAxis)
-      const rightButtonDown = (rightAxisPressed || rightButtonPressed) && !previousButtonStates[15]
-      const leftButtonDown = (leftAxisPressed || leftButtonPressed) && !previousButtonStates[14]
-      const rightButtonUp = (!rightAxisPressed && !rightButtonPressed) && previousButtonStates[15]
-      const leftButtonUp = (!leftAxisPressed && !leftButtonPressed) && previousButtonStates[14]
+      const rightButtonDown = (rightAxisPressed || rightButtonPressed) && !previousButtonStates[RIGHT_BTN_VAL]
+      const leftButtonDown = (leftAxisPressed || leftButtonPressed) && !previousButtonStates[LEFT_BTN_VAL]
+      const rightButtonUp = (!rightAxisPressed && !rightButtonPressed) && previousButtonStates[RIGHT_BTN_VAL]
+      const leftButtonUp = (!leftAxisPressed && !leftButtonPressed) && previousButtonStates[LEFT_BTN_VAL]
 
       if (rightButtonDown) {
         isPlayingForward = true
@@ -105,8 +104,8 @@ function gameLoop() {
       }
 
       // Store button states for the next frame
-      previousButtonStates[15] = (rightAxisPressed || rightButtonPressed)
-      previousButtonStates[14] = (leftAxisPressed || leftButtonPressed)
+      previousButtonStates[RIGHT_BTN_VAL] = (rightAxisPressed || rightButtonPressed)
+      previousButtonStates[LEFT_BTN_VAL] = (leftAxisPressed || leftButtonPressed)
     }
   } else {
     handleKeyboardInputs()
@@ -137,6 +136,7 @@ preloadFrames().then(() => {
   loadingText.style.display = 'none'
   requestAnimationFrame(gameLoop)
 })
+
 function handleKeyDown(event) {
   if (event.key === "ArrowRight") {
     isKeyDownRight = true
