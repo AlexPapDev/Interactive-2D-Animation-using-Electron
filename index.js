@@ -1,12 +1,14 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, globalShortcut } = require('electron');
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-  })
+    fullscreen: true,
+  });
 
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('index.html');
+  globalShortcut.register('Escape', () => {
+    app.quit()
+  })
 }
 
 app.on('ready', createWindow)

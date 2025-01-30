@@ -5,12 +5,30 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "build": {
+    "appId": "com.example.myapp",
+    "productName": "Interactive 2D Animation",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        "zip"
+      ],
+      "icon": "build/icon.ico"
+    }
+  },
   "devDependencies": {
-    "electron": "^34.0.1"
+    "electron": "^34.0.1",
+    "electron-builder": "^25.1.8"
   }
 }
