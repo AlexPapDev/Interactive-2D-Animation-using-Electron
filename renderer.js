@@ -1,7 +1,7 @@
 const canvas = document.getElementById('animationCanvas')
 const ctx = canvas.getContext('2d')
 canvas.width = screen.width
-canvas.height = screen.height
+canvas.height = 0
 
 const FRAME_COUNT = 224 // Number of frames
 const FRAME_RATE = 11.11 // Frames per second
@@ -134,6 +134,7 @@ preloadFrames().then(() => {
   console.log("All frames preloaded, starting animation.")
   const loadingText = document.querySelector(".loading-text")
   loadingText.style.display = 'none'
+  canvas.height = screen.height
   requestAnimationFrame(gameLoop)
 })
 
